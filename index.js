@@ -4,7 +4,9 @@ const bodyParser = require('body-parser');
 const { errorHandler } = require('./middleware/errorHandling');
 const app = express();
 let cors = require('cors')
+require('dotenv').config({ path: './config.env' });
 const PORT = process.env.PORT || 4000;
+const path = require('path')
 
 
 app.use(cors())
@@ -23,6 +25,15 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
 app.use(errorHandler);
+
+
+
+app.use(express.static(path.join(__dirname, '/client/build')));
+
+app.get('*', (req, res) => {
+
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+})
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
